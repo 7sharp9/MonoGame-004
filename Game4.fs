@@ -156,7 +156,7 @@ module TileLayer =
     let vectorToCell (position: Vector2) (tileSet: TileSet) =
         Point( int position.X / tileSet.tileWidth, int position.Y / tileSet.tileHeight)
             
-    let draw(spriteBatch: SpriteBatch, tileSet: TileSet, camera: Camera, layer : TileLayer, game: Game, font) =
+    let draw(spriteBatch: SpriteBatch, tileSet: TileSet, camera: Camera, layer : TileLayer, game: Game) =
         if not layer.visible then () else
         let cameraPoint =
             let location =
@@ -172,8 +172,6 @@ module TileLayer =
         
         let minX, minY =  max 0 (cameraPoint.X - 1), max 0 (cameraPoint.Y - 1)
         let maxX, maxY =  min (viewPoint.X + 1) layer.width - 1, min (viewPoint.Y + 1) layer.height - 1
-        
-        spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, transformMatrix = Nullable.op_Implicit camera.WorldToScreen)
 
         for y in minY..maxY do
             for x in minX..maxX do
@@ -184,7 +182,6 @@ module TileLayer =
                     let destination = Rectangle(x * tileSet.tileWidth, y * tileSet.tileHeight,
                                                 tileSet.tileWidth, tileSet.tileHeight)
                     spriteBatch.Draw(tileSet.texture, destination, Nullable.op_Implicit tileSet.sourceRectangles.[tile], Color.White)
-        spriteBatch.End()
 
 type Game4 () as this =
     inherit Game()
@@ -199,7 +196,6 @@ type Game4 () as this =
     let mutable tileSet = Unchecked.defaultof<TileSet>
     let mutable tileLayer = Unchecked.defaultof<TileLayer>
     let mutable terrain = Unchecked.defaultof<Texture2D>
-    let mutable debugFont = Unchecked.defaultof<SpriteFont>
 
     let (|KeyDown|_|) k (state: KeyboardState) =
         if state.IsKeyDown k then Some() else None
@@ -283,7 +279,6 @@ type Game4 () as this =
                        width = 48
                        height = 42
                        visible = true }
-        debugFont <- this.Content.Load<SpriteFont>("DebugText")
         base.Initialize()
 
     override this.LoadContent() =
@@ -353,10 +348,9 @@ type Game4 () as this =
     override this.Draw (gameTime) =
         this.GraphicsDevice.Clear Color.CornflowerBlue
 
-        //draw the map
-        TileLayer.draw(spriteBatch, tileSet, camera, tileLayer, this, debugFont)
-
         spriteBatch.Begin(transformMatrix = Nullable.op_Implicit camera.WorldToScreen)
+        TileLayer.draw(spriteBatch, tileSet, camera, tileLayer, this)
+        //spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, transformMatrix = Nullable.op_Implicit camera.WorldToScreen)
         player.Draw(spriteBatch)
         AnimatedSprite.draw newPlayer gameTime spriteBatch
         spriteBatch.End()

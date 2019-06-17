@@ -25,13 +25,6 @@
 /processorParam:TextureFormat=Color
 /build:BODY_skeleton.png;skeleton.png
 
-#begin File.spritefont
-/importer:FontDescriptionImporter
-/processor:FontDescriptionProcessor
-/processorParam:PremultiplyAlpha=True
-/processorParam:TextureFormat=Compressed
-/build:File.spritefont;DebugText.spritefont
-
 #begin terrain.png
 /importer:TextureImporter
 /processor:TextureProcessor
