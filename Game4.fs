@@ -1,4 +1,4 @@
-namespace MonoGame003
+namespace MonoGame004
 
 open Microsoft.Xna.Framework
 open Microsoft.Xna.Framework.Graphics
