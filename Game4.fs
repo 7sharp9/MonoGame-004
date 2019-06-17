@@ -5,7 +5,6 @@ open Microsoft.Xna.Framework.Graphics
 open Microsoft.Xna.Framework.Input
 open System
 open System.Collections.Generic
-open MonoGame.Extended
 
 type Sprite =
     {position: Vector2; speed: float32; texture: Texture2D; size: Point; offset: Point}
@@ -90,7 +89,6 @@ module AnimatedSprite =
         
     let draw (animSprite: AnimatedSprite) (gameTime: GameTime) (sb: SpriteBatch) =
         sb.Draw(animSprite.texture, animSprite.position, Nullable.op_Implicit animSprite.CurrentAnimation.CurrentFrame, Color.White)
-        sb.DrawRectangle(animSprite.position, animSprite.CurrentAnimation.CurrentFrame.ToRectangleF().Size, Color.Red)
 
 [<AutoOpen>]
 module MonoGameExtensions =
@@ -154,12 +152,6 @@ module TileLayer =
             | Some tileId when tileId > 0 ->
                 Some (tileId - 1) //id is one based, zero being an empty cell
             | _ -> None
-        
-    // let setTileId x y tileIndex (layer: TileLayer) =
-    //     match x, y with
-    //     | (x, y) when x < 0 || y < 0 -> ()
-    //     | (x ,y) when x >= layer.width || y >= layer.height -> ()
-    //     | _ -> layer.tiles.[y * layer.width + x] <- tileIndex
 
     let vectorToCell (position: Vector2) (tileSet: TileSet) =
         Point( int position.X / tileSet.tileWidth, int position.Y / tileSet.tileHeight)
@@ -192,8 +184,6 @@ module TileLayer =
                     let destination = Rectangle(x * tileSet.tileWidth, y * tileSet.tileHeight,
                                                 tileSet.tileWidth, tileSet.tileHeight)
                     spriteBatch.Draw(tileSet.texture, destination, Nullable.op_Implicit tileSet.sourceRectangles.[tile], Color.White)
-                    spriteBatch.DrawString  (font, sprintf "%i,%i\n%i" x y tile, destination.Location.ToVector2(), Color.White, 0.0f, Vector2.Zero, Vector2(0.9f, 0.9f), SpriteEffects.None, 0.0f )
-                    spriteBatch.DrawRectangle(destination.ToRectangleF(), Color.Black, 0.5f)
         spriteBatch.End()
 
 type Game4 () as this =
