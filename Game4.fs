@@ -318,10 +318,7 @@ type Game4 () as this =
             let newPos =
                 player.position + movementVector * player.speed * float32 gameTime.ElapsedGameTime.TotalSeconds
             
-            let playerSize = player.Size.ToVector2()
-            
-            let minClamp =
-                Vector2.Zero
+            let minClamp = Vector2.Zero
             
             let maxClamp =
                 Vector2(float32 (tileLayer.width * tileSet.tileWidth) - float32 player.Size.X,
