@@ -4,7 +4,6 @@ open Microsoft.Xna.Framework
 open Microsoft.Xna.Framework.Graphics
 open Microsoft.Xna.Framework.Input
 open System
-open System.Collections.Generic
 
 type Sprite =
     {position: Vector2; speed: float32; texture: Texture2D; size: Point; offset: Point}
@@ -227,8 +226,8 @@ type Game4 () as this =
                 WalkDown,  Animation.Create(8, 10, frameSize, Point(64, 128))
                 WalkRight, Animation.Create(8, 10, frameSize, Point(64, 192)) ] |> Map.ofList
         playerAnimations <- anims
-        terrain <- this.Content.Load<Texture2D>("terrain")
         camera <- Camera(this.GraphicsDevice.Viewport)
+        terrain <- this.Content.Load<Texture2D>("terrain")
         tileSet <- TileSet.createTileSet(32, 32, 32, 32, terrain)
         let tiles =
             [|  190;189;190;188;190;188;189;189;29;157;157;157;157;157;157;157;157;157;157;157;157;157;157;157;157;157;157;157;157;157;157;157;157;30;189;188;188;188;190;189;190;189;188;190;188;189;190;189;
@@ -344,10 +343,8 @@ type Game4 () as this =
 
     override this.Draw (gameTime) =
         this.GraphicsDevice.Clear Color.CornflowerBlue
-
-        spriteBatch.Begin(transformMatrix = Nullable.op_Implicit camera.WorldToScreen)
+        spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, transformMatrix = Nullable.op_Implicit camera.WorldToScreen)
         TileLayer.draw(spriteBatch, tileSet, camera, tileLayer, this)
-        //spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, transformMatrix = Nullable.op_Implicit camera.WorldToScreen)
         player.Draw(spriteBatch)
         AnimatedSprite.draw newPlayer gameTime spriteBatch
         spriteBatch.End()
